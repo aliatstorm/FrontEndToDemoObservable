@@ -28,5 +28,10 @@ namespace FrontEndToDemoObservable.Services
                 throw new Exception($"No data found for ATC: {atcId}");
             }
         }
+
+        public async Task NewSessionAdded(string newSessionId)
+        {
+
+        }
     }
 }

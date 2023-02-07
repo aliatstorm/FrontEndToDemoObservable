@@ -2,6 +2,7 @@ using FrontEndToDemoObservable;
 using FrontEndToDemoObservable.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.SignalR.Client;
 using Polly;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -20,5 +21,13 @@ builder.Services.AddHttpClient("psiAPIClient",
 
 builder.Services.AddSingleton<StateContainer>();
 builder.Services.AddSingleton<SessionApiService>();
+builder.Services.AddSingleton<SignalrClientService>();
+builder.Services.AddSingleton(sp =>
+{
+    return new HubConnectionBuilder()
+        .WithUrl(new Uri("https://localhost:7196/sessionhub"))
+        .WithAutomaticReconnect()
+        .Build();
+});
 
 await builder.Build().RunAsync();

@@ -2,6 +2,7 @@
 @implements IDisposable
 @inject StateContainer StateContainer
 @inject SessionApiService SessionApiService
+@inject SignalrClientService SignalRClientService
 <PageTitle>Index</PageTitle>
 <h2>Main component</h2>
 
@@ -27,11 +28,12 @@ else
 
 @code {
     private string atcId = string.Empty;
-
-    protected override void OnInitialized()
+    private CancellationTokenSource cts = new();
+    protected override async void OnInitialized()
     {
+        _ = SignalRClientService.ConnectWithRetryAsync(cts.Token);
+        await SignalRClientService.StartUserSession();
         StateContainer.OnChange += StateHasChanged;
-
     }
 
     private async void HandleSubmit()
