@@ -1,0 +1,30 @@
+﻿@implements IDisposable
+@inject StateContainer StateContainer
+<h2>Nested component</h2>
+
+<h3>All Sessions</h3>
+@if (StateContainer.AtcExamSessions == null || StateContainer.AtcExamSessions.Sessions == null || !StateContainer.AtcExamSessions.Sessions.ClosedSessions.Any())
+{
+    <p>No Result Found</p>
+}
+else
+{
+    foreach (var sessions in StateContainer.AtcExamSessions.Sessions.ClosedSessions)
+    {
+        <p>
+            @sessions.SessionCode
+        </p>
+    }
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        StateContainer.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        StateContainer.OnChange -= StateHasChanged;
+    }
+}

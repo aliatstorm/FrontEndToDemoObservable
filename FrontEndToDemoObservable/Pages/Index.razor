@@ -1,0 +1,48 @@
+﻿@page "/"
+@implements IDisposable
+@inject StateContainer StateContainer
+@inject SessionApiService SessionApiService
+<PageTitle>Index</PageTitle>
+<h2>Main component</h2>
+
+<EditForm Model="@atcId" OnSubmit="@HandleSubmit">
+    <InputText id="atcId" @bind-Value="atcId" />
+    <button type="submit">Submit</button>
+</EditForm>
+
+<h3>All Sessions</h3>
+@if (StateContainer.AtcExamSessions == null || StateContainer.AtcExamSessions.Sessions == null || !StateContainer.AtcExamSessions.Sessions.ClosedSessions.Any())
+{
+    <p>No Result Found</p>
+}
+else
+{
+    foreach (var sessions in StateContainer.AtcExamSessions.Sessions.ClosedSessions)
+    {
+        <p>
+            @sessions.SessionCode
+        </p>
+    }
+}
+
+@code {
+    private string atcId = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        StateContainer.OnChange += StateHasChanged;
+
+    }
+
+    private async void HandleSubmit()
+    {
+        await SessionApiService.GetSessions(atcId);
+    }
+
+    public void Dispose()
+    {
+        StateContainer.OnChange -= StateHasChanged;
+    }
+}
+<hr />
+<Counter></Counter>
